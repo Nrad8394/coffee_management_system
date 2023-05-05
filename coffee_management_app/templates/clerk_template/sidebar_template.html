@@ -1,0 +1,100 @@
+{% load static %}
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <!-- Brand Logo -->
+      <a href="{% url 'clerk_home' %}" class="brand-link">
+        <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+            style="opacity: .8">
+        <span class="brand-text font-weight-light">Open University</span>
+      </a>
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="image">
+            <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="User Image">
+          </div>
+          <div class="info">
+            <a href="{% url 'clerk_profile' %}" class="d-block">{{ user.first_name }} {{ user.last_name }}</a>
+          </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
+                with font-awesome or any other icon font library -->
+            
+            <li class="nav-item">
+              {% url 'clerk_home' as clerk_home %}
+              <a href="{{ clerk_home }}" class="nav-link {% if request.path == clerk_home %} active {% endif %}">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>
+                  Home
+                  {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'clerk_take_attendance' as clerk_take_attendance %}
+              <a href="{{ clerk_take_attendance }}" class="nav-link {% if request.path == clerk_take_attendance %} active {% endif %}">
+                <i class="nav-icon fas fa-calendar-plus"></i>
+                <p>
+                  Take Attendance
+                  {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'clerk_update_attendance' as clerk_update_attendance %}
+              <a href="{{ clerk_update_attendance }}" class="nav-link {% if request.path == clerk_update_attendance %} active {% endif %}">
+                <i class="nav-icon fas fa-calendar-alt"></i>
+                <p>
+                  View Update Attendance
+                  {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'clerk_add_result' as clerk_add_result %}
+              <a href="{{ clerk_add_result }}" class="nav-link {% if request.path == clerk_add_result %} active {% endif %}">
+                <i class="nav-icon fas fa-tasks"></i>
+                <p>
+                  Add Result
+                  {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'clerk_apply_leave' as clerk_apply_leave %}
+              <a href="{{ clerk_apply_leave }}" class="nav-link {% if request.path == clerk_apply_leave %} active {% endif %}">
+                <i class="nav-icon fas fa-envelope-open-text"></i>
+                <p>
+                  Apply Leave
+                  {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'clerk_feedback' as clerk_feedback %}
+              <a href="{{ clerk_feedback }}" class="nav-link {% if request.path == clerk_feedback %} active {% endif %}">
+                <i class="nav-icon fas fa-comments"></i>
+                <p>
+                  Feedback
+                  {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
+                </p>
+              </a>
+            </li>
+
+          </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+      </div>
+      <!-- /.sidebar -->
+    </aside>
