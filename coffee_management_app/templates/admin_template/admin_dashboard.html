@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Coffee Management System</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+     integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+     
+     <link rel="stylesheet" href="index.css">
+     <style>
+        html, body {
+            
+            user-select: none;
+        }
+        .card{
+          border-radius: 4px;
+          background: #fff;
+          box-shadow: 0 6px 10px rgba(0,0,0,.08), 0 0 6px rgba(0,0,0,.05);
+          transition: .3s transform cubic-bezier(.155,1.105,.295,1.12),.3s box-shadow,.3s -webkit-transform cubic-bezier(.155,1.105,.295,1.12);
+         
+          cursor: pointer;
+      }
+      
+      .card:hover{
+        transform: scale(1.05);
+        box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
+      }
+     </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="jumbotron">
+        <h1 class="display-5 text-center text-bg-primary">Welcome to Admin Dashboard</h1>
+        
+      </div>
+      <div class="card-deck  ">
+        <div class="card text-center">
+          <div class="card-body">
+            <h4 class="card-title"> <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Home
+              </p>
+            </h4>
+            <a href="{% url 'admin_home' %}" class="btn btn-dark active stretched-link">Visit</a>
+          </div>
+        </div>
+        <div class="card text-center">
+          <div class="card-body">
+            <h4 class="card-title"><i class="nav-icon fas fa-chalkboard-teacher"></i>
+              <p>
+                Manage Clerk
+              </p>
+            </h4>
+            <a href="{% url 'manage_clerk' %}" class="btn btn-dark active stretched-link">Visit</a>
+          </div>
+        </div>
+        <div class="card text-center">
+          <div class="card-body">
+            <h4 class="card-title"><i class="nav-icon fas fa-user-graduate"></i>
+              <p>
+                Manage Supplier
+              </p>
+            </h4>
+            <a href="{% url 'manage_suppliers' %}" class="btn btn-dark active stretched-link">Visit</a>
+          </div>
+        </div>
+      </div>
+      <div class="card-deck p-2">
+        <div class="card text-center">
+          <div class="card-body">
+            <h4 class="card-title"> <i class="nav-icon fas fa-chalkboard"></i>
+              <p>
+                Manage Coffee_type
+              </p>
+            </h4>
+            <a href="{% url 'manage_coffee_types' %}" class="btn btn-dark active stretched-link">Visit</a>
+          </div>
+        </div>
+        <div class="card text-center">
+          <div class="card-body">
+            <h4 class="card-title"> <i class="nav-icon fas fa-th"></i>
+              <p>
+                Manage Batch
+              </p>
+            </h4>
+            <a href="{% url 'manage_batch' %}" class="btn btn-dark active stretched-link">Visit</a>
+          </div>
+        </div>
+        <div class="card text-center">
+          <div class="card-body">
+            <h4 class="card-title"><i class="nav-icon fas fa-graduation-cap"></i>
+              <p>
+                Manage Season 
+              </p>
+            </h4>
+            <a href="{% url 'manage_season' %}" class="btn btn-dark active stretched-link">Visit</a>
+          </div>
+        </div>
+      </div>
+      <div class="card-deck p-2">
+        <div class="card text-center">
+          <div class="card-body">
+            <h4 class="card-title"> <i class="nav-icon fas fa-th"></i>
+              <p>
+                Supplier Feedback
+              </p>
+            </h4>
+            <a href="{% url 'suppliers_feedback_message' %}" class="btn btn-dark active stretched-link">Visit</a>
+          </div>
+        </div>
+        <div class="card text-center">
+          <div class="card-body">
+            <h4 class="card-title"><i class="nav-icon fas fa-th"></i>
+              <p>
+                Clerk Feedback
+              </p>
+            </h4>
+            <a href="{% url 'clerk_feedback_message' %}" class="btn btn-dark active stretched-link">Visit</a>
+          </div>
+        </div>
+        <!-- <div class="card text-center">
+          <div class="card-body">
+            <h4 class="card-title"> <i class="nav-icon fas fa-th"></i>
+              <p>
+                Supplier Leave
+              </p>
+            </h4>
+            <a href="{% url 'supplier_leave_view' %}" class="btn btn-dark active stretched-link">Visit</a>
+          </div>
+        </div> -->
+        <div class="card text-center">
+          <div class="card-body">
+            <h4 class="card-title"> <i class="nav-icon fas fa-th"></i>
+              <p>
+                Clerk Leave
+              </p>
+            </h4>
+            <a href="{% url 'clerk_leave_view' %}" class="btn btn-dark active stretched-link">Visit</a>
+          </div>
+        </div>
+      </div>
+      <div class="card-deck p-2">
+        
+        <div class="card text-center">
+          <div class="card-body">
+            <h4 class="card-title">  <i class="nav-icon fas fa-calendar-alt"></i>
+              <p>
+                View Records
+              </p>
+            </h4>
+            <a href="{% url 'admin_view_attendance' %}" class="btn btn-dark active stretched-link">Visit</a>
+          </div>
+        </div>
+        
+      </div>
+     
+    </div>
+      
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://use.fontawesome.com/956429e1e5.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>

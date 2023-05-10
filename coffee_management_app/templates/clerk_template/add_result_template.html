@@ -53,17 +53,17 @@
                             <div class="form-group">
                                 <label>Batch </label>
                                 <select class="form-control" name="batch" id="batch">
-                                    {% for batch in subjects %}
-                                        <option value="{{ batch.id }}">{{ batch.subject_name }}</option>
+                                    {% for batch in batchs %}
+                                        <option value="{{ batch.id }}">{{ batch.batch_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
 
                             <div class="form-group">
                                 <label>Season Year </label>
-                                <select class="form-control" name="session_year" id="session_year">
-                                    {% for session_year in session_years %}
-                                        <option value="{{ session_year.id }}">{{ session_year.session_start_year }} to {{ session_year.session_end_year }}</option>
+                                <select class="form-control" name="season_year" id="season_year">
+                                    {% for season_year in season_years %}
+                                        <option value="{{ season_year.id }}">{{ season_year.season_start_year }} to {{ season_year.season_end_year }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -73,12 +73,12 @@
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                        <button type="button" class="btn btn-primary" id="fetch_student">Fetch Supplier</button>
+                        <button type="button" class="btn btn-primary" id="fetch_supplier">Fetch Supplier</button>
                         </div>
 
                         {% comment %} Displaying Suppliers Here {% endcomment %}
 
-                        <div class="card-footer" id="student_data">
+                        <div class="card-footer" id="supplier_data">
                         </div> 
 
                     </div>
@@ -97,17 +97,17 @@
 
 <script>
     $(document).ready(function(){
-        $("#fetch_student").click(function(){
+        $("#fetch_supplier").click(function(){
 
             // Displaying Suppliers Based on Clerk, Coffee_type and Season Enrolled
 
             var batch=$("#batch").val()
-            var session_year=$("#session_year").val()
+            var season_year=$("#season_year").val()
 
             $.ajax({
                 url:'{% url 'get_suppliers' %}',
                 type:'POST',
-                data:{batch:batch, session_year:session_year},
+                data:{batch:batch, season_year:season_year},
             })
 
             
@@ -115,7 +115,7 @@
                 var json_data=JSON.parse(response);
                 console.log(json_data)
                 //Displaying Attendance Date Input and Suppliers Attendance
-                var div_data="<div class='form-group'><label>Supplier List</label> <select class='student_list form-control' name='student_list'>"
+                var div_data="<div class='form-group'><label>Supplier List</label> <select class='supplier_list form-control' name='supplier_list'>"
 
                 for(key in json_data)
                 {
@@ -139,7 +139,7 @@
                 div_data+="<div class='form-group'>";
                 div_data+="<button id='save_attendance' class='btn btn-success' type='submit'>Save Result</button>";
                 div_data+="</div>";
-                $("#student_data").html(div_data);
+                $("#supplier_data").html(div_data);
 
             })
             .fail(function(){
@@ -155,7 +155,7 @@
                 $(this).text("Saving Attendance Data...")
 
                 //console.log("SAVE")
-                var student_data=$("input[name='student_data[]'").map(function(){ 
+                var supplier_data=$("input[name='supplier_data[]'").map(function(){ 
                         if($(this).is(":checked")){
                             return {"id":$(this).val(), "status":1}; // Getting ID and Value of Suppliers
                         }
@@ -165,18 +165,18 @@
                         }
                     }).get()
                 var attendance_date=$("#attendance_date").val();
-                var subject_id=$("#batch").val();
-                var session_year_id=$("#session_year").val();
+                var batch_id=$("#batch").val();
+                var season_year_id=$("#season_year").val();
                 //console.log(attendance_date)
-                //console.log(student_data);
-                student_data = JSON.stringify(student_data)
+                //console.log(supplier_data);
+                supplier_data = JSON.stringify(supplier_data)
 
                 // Saving Attendance Data into Database
 
                 $.ajax({
                     url:'{% url 'save_attendance_data' %}',
                     type:'POST',
-                    data:{student_ids:student_data, attendance_date:attendance_date, subject_id:subject_id, session_year_id:session_year_id},
+                    data:{supplier_ids:supplier_data, attendance_date:attendance_date, batch_id:batch_id, season_year_id:season_year_id},
                 })
 
                 

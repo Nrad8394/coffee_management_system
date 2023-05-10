@@ -11,43 +11,34 @@ And if you like this project then ADD a STAR ⭐️  to this project 👆
 ## Features of this Project
 
 ### A. Admin Users Can
-1. See Overall Summary Charts of Stuudents Performance, Clerk Perfomrances, Courses, Subjects, Leave, etc.
+1. See Overall Summary Charts of Stuudents Performance, Clerk Perfomrances, Coffee_types, Batch, Leave, etc.
 2. Manage Clerk (Add, Update and Delete)
 3. Manage Suppliers (Add, Update and Delete)
 4. Manage Coffee_type (Add, Update and Delete)
-5. Manage Subjects (Add, Update and Delete)
-6. Manage Sessions (Add, Update and Delete)
+5. Manage Batch (Add, Update and Delete)
+6. Manage Seasons (Add, Update and Delete)
 7. View Supplier Attendance
 8. Review and Reply Supplier/Clerk Feedback
 9. Review (Approve/Reject) Supplier/Clerk Leave
 
 ### B. Clerk/Teachers Can
-1. See the Overall Summary Charts related to their students, their subjects, leave status, etc.
+1. See the Overall Summary Charts related to their suppliers, their batch, leave status, etc.
 2. Take/Update Suppliers Attendance
 3. Add/Update Result
 4. Apply for Leave
 5. Send Feedback to AdminManager
 
 ### C. Suppliers Can
-1. See the Overall Summary Charts related to their attendance, their subjects, leave status, etc.
+1. See the Overall Summary Charts related to their attendance, their batch, leave status, etc.
 2. View Attendance
 3. View Result
 4. Apply for Leave
 5. Send Feedback to AdminManager
 
 
-## Support Developer
-1. Subscribe & Share my YouTube Channel - https://bit.ly/vijay-thapa-online-courses
-2. Add a Star 🌟  to this 👆 Repository
 
 
-## Donate
 
-**[PayPal](https://bit.ly/support-vijay-thapa)**
-
-**[Buy me a Coffee  ☕️](https://www.buymeacoffee.com/vijaythapa)**
-
-**Donate by wire transfer:** E-Mail at *donate@vijaythapa.com* for wire transfer details. 
 
 
 ## How to Install and Run this project?

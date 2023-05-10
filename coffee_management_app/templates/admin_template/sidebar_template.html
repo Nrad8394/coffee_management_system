@@ -79,9 +79,9 @@
             </li>
 
             <li class="nav-item">
-              {% url 'manage_course' as manage_course %}
-              {% url 'edit_course' course_id=id as edit_course %}
-              <a href="{{ manage_course }}" class="nav-link {% if request.path == manage_course %} active {% endif %} {% if request.path == edit_course %} active {% endif %}">
+              {% url 'manage_coffee_types' as manage_coffee_types %}
+              {% url 'edit_coffee_types' coffee_types_id=id as edit_coffee_types %}
+              <a href="{{ manage_coffee_types }}" class="nav-link {% if request.path == manage_coffee_types %} active {% endif %} {% if request.path == edit_coffee_types %} active {% endif %}">
                 <i class="nav-icon fas fa-chalkboard"></i>
                 <p>
                   Manage Coffee_type
@@ -90,8 +90,8 @@
             </li>
 
             <li class="nav-item">
-            {% url 'add_course' as add_course %}
-              <a href="{{ add_course }}" class="nav-link {% if request.path == add_course %} active {% endif %}">
+            {% url 'add_coffee_types' as add_coffee_types %}
+              <a href="{{ add_coffee_types }}" class="nav-link {% if request.path == add_coffee_types %} active {% endif %}">
                 <i class="nav-icon fas fa-th"></i>
                 <p>
                   Add Coffee_type
@@ -100,9 +100,9 @@
             </li>
 
             <li class="nav-item">
-              {% url 'manage_subject' as manage_subject %}
-              {% url 'edit_subject' subject_id=id as edit_subject %}
-              <a href="{{ manage_subject }}" class="nav-link {% if request.path == manage_subject %} active {% endif %} {% if request.path == edit_subject %} active {% endif %}">
+              {% url 'manage_batch' as manage_batch %}
+              {% url 'edit_batch' batch_id=id as edit_batch %}
+              <a href="{{ manage_batch }}" class="nav-link {% if request.path == manage_batch %} active {% endif %} {% if request.path == edit_batch %} active {% endif %}">
                 <i class="nav-icon fas fa-book"></i>
                 <p>
                   Manage Batch
@@ -111,8 +111,8 @@
             </li>
 
             <li class="nav-item">
-              {% url 'add_subject' as add_subject %}
-              <a href="{{ add_subject }}" class="nav-link {% if request.path == add_subject %} active {% endif %}">
+              {% url 'add_batch' as add_batch %}
+              <a href="{{ add_batch }}" class="nav-link {% if request.path == add_batch %} active {% endif %}">
                 <i class="nav-icon fas fa-th"></i>
                 <p>
                   Add Batch
@@ -122,9 +122,9 @@
 
 
             <li class="nav-item">
-              {% url 'manage_session' as manage_session %}
-              {% url 'edit_session' session_id=id as edit_session %}
-              <a href="{{ manage_session }}" class="nav-link {% if request.path == manage_session %} active {% endif %} {% if request.path == edit_session %} active {% endif %}">
+              {% url 'manage_season' as manage_season %}
+              {% url 'edit_season' season_id=id as edit_season %}
+              <a href="{{ manage_season }}" class="nav-link {% if request.path == manage_season %} active {% endif %} {% if request.path == edit_season %} active {% endif %}">
                 <i class="nav-icon fas fa-graduation-cap"></i>
                 <p>
                   Manage Season 
@@ -133,8 +133,8 @@
             </li>
 
             <li class="nav-item">
-              {% url 'add_session' as add_session %}
-              <a href="{{ add_session }}" class="nav-link {% if request.path == add_session %} active {% endif %}">
+              {% url 'add_season' as add_season %}
+              <a href="{{ add_season }}" class="nav-link {% if request.path == add_season %} active {% endif %}">
                 <i class="nav-icon fas fa-th"></i>
                 <p>
                   Add Season

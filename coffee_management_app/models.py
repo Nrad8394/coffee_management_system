@@ -5,10 +5,11 @@ from django.dispatch import receiver
 
 
 
-class SessionYearModel(models.Model):
+
+class SeasonYearModel(models.Model):
     id = models.AutoField(primary_key=True)
-    session_start_year = models.DateField()
-    session_end_year = models.DateField()
+    season_start_year = models.DateField()
+    season_end_year = models.DateField()
     objects = models.Manager()
 
 
@@ -22,7 +23,7 @@ class CustomUser(AbstractUser):
 
 class AdminManager(models.Model):
     id = models.AutoField(primary_key=True)
-    admin = models.OneToOneField(CustomUser, on_delete = models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete = models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
@@ -30,30 +31,29 @@ class AdminManager(models.Model):
 
 class Clerk(models.Model):
     id = models.AutoField(primary_key=True)
-    admin = models.OneToOneField(CustomUser, on_delete = models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete = models.CASCADE)
     address = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
 
 
-
-class Courses(models.Model):
+class Coffee_types(models.Model):
     id = models.AutoField(primary_key=True)
-    course_name = models.CharField(max_length=255)
+    coffee_types_name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
 
     # def __str__(self):
-	#     return self.course_name
+	#     return self.coffee_types_name
 
 
 
-class Subjects(models.Model):
+class Batch(models.Model):
     id =models.AutoField(primary_key=True)
-    subject_name = models.CharField(max_length=255)
-    course_id = models.ForeignKey(Courses, on_delete=models.CASCADE, default=1) #need to give defauult coffee_type
+    batch_name = models.CharField(max_length=255)
+    coffee_types_id = models.ForeignKey(Coffee_types, on_delete=models.CASCADE, default=1) #need to give defauult coffee_type
     clerk_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -63,12 +63,12 @@ class Subjects(models.Model):
 
 class Suppliers(models.Model):
     id = models.AutoField(primary_key=True)
-    admin = models.OneToOneField(CustomUser, on_delete = models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete = models.CASCADE)
     gender = models.CharField(max_length=50)
     profile_pic = models.FileField()
     address = models.TextField()
-    course_id = models.ForeignKey(Courses, on_delete=models.DO_NOTHING, default=1)
-    session_year_id = models.ForeignKey(SessionYearModel, on_delete=models.CASCADE)
+    coffee_types_id = models.ForeignKey(Coffee_types, on_delete=models.DO_NOTHING, default=1)
+    season_year_id = models.ForeignKey(SeasonYearModel, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
@@ -77,9 +77,9 @@ class Suppliers(models.Model):
 class Attendance(models.Model):
     # Batch Attendance
     id = models.AutoField(primary_key=True)
-    subject_id = models.ForeignKey(Subjects, on_delete=models.DO_NOTHING)
+    batch_id = models.ForeignKey(Batch, on_delete=models.DO_NOTHING)
     attendance_date = models.DateField()
-    session_year_id = models.ForeignKey(SessionYearModel, on_delete=models.CASCADE)
+    season_year_id = models.ForeignKey(SeasonYearModel, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
@@ -150,7 +150,7 @@ class NotificationSupplier(models.Model):
 
 class NotificationClerk(models.Model):
     id = models.AutoField(primary_key=True)
-    stafff_id = models.ForeignKey(Clerk, on_delete=models.CASCADE)
+    clerk_id = models.ForeignKey(Clerk, on_delete=models.CASCADE)
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -160,9 +160,9 @@ class NotificationClerk(models.Model):
 class SupplierResult(models.Model):
     id = models.AutoField(primary_key=True)
     suppliers_id = models.ForeignKey(Suppliers, on_delete=models.CASCADE)
-    subject_id = models.ForeignKey(Subjects, on_delete=models.CASCADE)
-    subject_exam_marks = models.FloatField(default=0)
-    subject_assignment_marks = models.FloatField(default=0)
+    batch_id = models.ForeignKey(Batch, on_delete=models.CASCADE)
+    batch_exam_marks = models.FloatField(default=0)
+    batch_assignment_marks = models.FloatField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
@@ -179,11 +179,11 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created:
         # Check the user_type and insert the data in respective tables
         if instance.user_type == 1:
-            AdminManager.objects.create(admin=instance)
+            AdminManager.objects.create(user=instance)
         if instance.user_type == 2:
-            Clerk.objects.create(admin=instance)
+            Clerk.objects.create(user=instance)
         if instance.user_type == 3:
-            Suppliers.objects.create(admin=instance, course_id=Courses.objects.get(id=1), session_year_id=SessionYearModel.objects.get(id=1), address="", profile_pic="", gender="")
+            Suppliers.objects.create(user=instance, coffee_types_id=Coffee_types.objects.get(id=1), season_year_id=SeasonYearModel.objects.get(id=1), address="", profile_pic="", gender="")
     
 
 @receiver(post_save, sender=CustomUser)

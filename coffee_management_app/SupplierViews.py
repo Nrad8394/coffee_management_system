@@ -5,27 +5,27 @@ from django.core.files.storage import FileSystemStorage #To upload Profile Pictu
 from django.urls import reverse
 import datetime # To Parse input DateTime into Python Date Time Object
 
-from coffee_management_app.models import CustomUser, Clerk, Courses, Subjects, Suppliers, Attendance, AttendanceReport, LeaveReportSuppliers, FeedBackSuppliers, SupplierResult
+from coffee_management_app.models import CustomUser, Clerk, Coffee_types, Batch, Suppliers, Attendance, AttendanceReport, LeaveReportSuppliers, FeedBackSuppliers, SupplierResult
 
 
 def supplier_home(request):
-    student_obj = Suppliers.objects.get(admin=request.user.id)
-    total_attendance = AttendanceReport.objects.filter(suppliers_id=student_obj).count()
-    attendance_present = AttendanceReport.objects.filter(suppliers_id=student_obj, status=True).count()
-    attendance_absent = AttendanceReport.objects.filter(suppliers_id=student_obj, status=False).count()
+    supplier_obj = Suppliers.objects.get(user=request.user.id)
+    total_attendance = AttendanceReport.objects.filter(suppliers_id=supplier_obj).count()
+    attendance_present = AttendanceReport.objects.filter(suppliers_id=supplier_obj, status=True).count()
+    attendance_absent = AttendanceReport.objects.filter(suppliers_id=supplier_obj, status=False).count()
 
-    course_obj = Courses.objects.get(id=student_obj.course_id.id)
-    total_subjects = Subjects.objects.filter(course_id=course_obj).count()
+    coffee_types_obj = Coffee_types.objects.get(id=supplier_obj.coffee_types_id.id)
+    total_batchs = Batch.objects.filter(coffee_types_id=coffee_types_obj).count()
 
-    subject_name = []
+    batch_name = []
     data_present = []
     data_absent = []
-    subject_data = Subjects.objects.filter(course_id=student_obj.course_id)
-    for batch in subject_data:
-        attendance = Attendance.objects.filter(subject_id=batch.id)
-        attendance_present_count = AttendanceReport.objects.filter(attendance_id__in=attendance, status=True, suppliers_id=student_obj.id).count()
-        attendance_absent_count = AttendanceReport.objects.filter(attendance_id__in=attendance, status=False, suppliers_id=student_obj.id).count()
-        subject_name.append(batch.subject_name)
+    batch_data = Batch.objects.filter(coffee_types_id=supplier_obj.coffee_types_id)
+    for batch in batch_data:
+        attendance = Attendance.objects.filter(batch_id=batch.id)
+        attendance_present_count = AttendanceReport.objects.filter(attendance_id__in=attendance, status=True, suppliers_id=supplier_obj.id).count()
+        attendance_absent_count = AttendanceReport.objects.filter(attendance_id__in=attendance, status=False, suppliers_id=supplier_obj.id).count()
+        batch_name.append(batch.batch_name)
         data_present.append(attendance_present_count)
         data_absent.append(attendance_absent_count)
     
@@ -33,21 +33,21 @@ def supplier_home(request):
         "total_attendance": total_attendance,
         "attendance_present": attendance_present,
         "attendance_absent": attendance_absent,
-        "total_subjects": total_subjects,
-        "subject_name": subject_name,
+        "total_batchs": total_batchs,
+        "batch_name": batch_name,
         "data_present": data_present,
         "data_absent": data_absent
     }
-    return render(request, "supplier_template/student_home_template.html", context)
+    return render(request, "supplier_template/supplier_home_template.html", context)
 
 
 def supplier_view_attendance(request):
-    supplier = Suppliers.objects.get(admin=request.user.id) # Getting Logged in Supplier Data
-    coffee_type = supplier.course_id # Getting Coffee_type Enrolled of LoggedIn Supplier
-    # coffee_type = Courses.objects.get(id=supplier.course_id.id) # Getting Coffee_type Enrolled of LoggedIn Supplier
-    subjects = Subjects.objects.filter(course_id=coffee_type) # Getting the Subjects of Coffee_type Enrolled
+    supplier = Suppliers.objects.get(user=request.user.id) # Getting Logged in Supplier Data
+    coffee_type = supplier.coffee_types_id # Getting Coffee_type Enrolled of LoggedIn Supplier
+    # coffee_type = Coffee_types.objects.get(id=supplier.coffee_types_id.id) # Getting Coffee_type Enrolled of LoggedIn Supplier
+    batchs = Batch.objects.filter(coffee_types_id=coffee_type) # Getting the Batch of Coffee_type Enrolled
     context = {
-        "subjects": subjects
+        "batchs": batchs
     }
     return render(request, "supplier_template/supplier_view_attendance.html", context)
 
@@ -58,7 +58,7 @@ def supplier_view_attendance_post(request):
         return redirect('supplier_view_attendance')
     else:
         # Getting all the Input Data
-        subject_id = request.POST.get('batch')
+        batch_id = request.POST.get('batch')
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
 
@@ -67,14 +67,14 @@ def supplier_view_attendance_post(request):
         end_date_parse = datetime.datetime.strptime(end_date, '%Y-%m-%d').date()
 
         # Getting all the Batch Data based on Selected Batch
-        subject_obj = Subjects.objects.get(id=subject_id)
+        batch_obj = Batch.objects.get(id=batch_id)
         # Getting Logged In User Data
         user_obj = CustomUser.objects.get(id=request.user.id)
         # Getting Supplier Data Based on Logged in Data
-        stud_obj = Suppliers.objects.get(admin=user_obj)
+        stud_obj = Suppliers.objects.get(user=user_obj)
 
         # Now Accessing Attendance Data based on the Range of Date Selected and Batch Selected
-        attendance = Attendance.objects.filter(attendance_date__range=(start_date_parse, end_date_parse), subject_id=subject_obj)
+        attendance = Attendance.objects.filter(attendance_date__range=(start_date_parse, end_date_parse), batch_id=batch_obj)
         # Getting Attendance Report based on the attendance details obtained above
         attendance_reports = AttendanceReport.objects.filter(attendance_id__in=attendance, suppliers_id=stud_obj)
 
@@ -84,16 +84,16 @@ def supplier_view_attendance_post(request):
         # messages.success(request, "Attendacne View Success")
 
         context = {
-            "subject_obj": subject_obj,
+            "batch_obj": batch_obj,
             "attendance_reports": attendance_reports
         }
 
-        return render(request, 'supplier_template/student_attendance_data.html', context)
+        return render(request, 'supplier_template/supplier_attendance_data.html', context)
        
 
 def supplier_apply_leave(request):
-    student_obj = Suppliers.objects.get(admin=request.user.id)
-    leave_data = LeaveReportSuppliers.objects.filter(suppliers_id=student_obj)
+    supplier_obj = Suppliers.objects.get(user=request.user.id)
+    leave_data = LeaveReportSuppliers.objects.filter(suppliers_id=supplier_obj)
     context = {
         "leave_data": leave_data
     }
@@ -108,9 +108,9 @@ def supplier_apply_leave_save(request):
         leave_date = request.POST.get('leave_date')
         leave_message = request.POST.get('leave_message')
 
-        student_obj = Suppliers.objects.get(admin=request.user.id)
+        supplier_obj = Suppliers.objects.get(user=request.user.id)
         try:
-            leave_report = LeaveReportSuppliers(suppliers_id=student_obj, leave_date=leave_date, leave_message=leave_message, leave_status=0)
+            leave_report = LeaveReportSuppliers(suppliers_id=supplier_obj, leave_date=leave_date, leave_message=leave_message, leave_status=0)
             leave_report.save()
             messages.success(request, "Applied for Leave.")
             return redirect('supplier_apply_leave')
@@ -120,8 +120,8 @@ def supplier_apply_leave_save(request):
 
 
 def supplier_feedback(request):
-    student_obj = Suppliers.objects.get(admin=request.user.id)
-    feedback_data = FeedBackSuppliers.objects.filter(suppliers_id=student_obj)
+    supplier_obj = Suppliers.objects.get(user=request.user.id)
+    feedback_data = FeedBackSuppliers.objects.filter(suppliers_id=supplier_obj)
     context = {
         "feedback_data": feedback_data
     }
@@ -134,10 +134,10 @@ def supplier_feedback_save(request):
         return redirect('supplier_feedback')
     else:
         feedback = request.POST.get('feedback_message')
-        student_obj = Suppliers.objects.get(admin=request.user.id)
+        supplier_obj = Suppliers.objects.get(user=request.user.id)
 
         try:
-            add_feedback = FeedBackSuppliers(suppliers_id=student_obj, feedback=feedback, feedback_reply="")
+            add_feedback = FeedBackSuppliers(suppliers_id=supplier_obj, feedback=feedback, feedback_reply="")
             add_feedback.save()
             messages.success(request, "Feedback Sent.")
             return redirect('supplier_feedback')
@@ -148,7 +148,7 @@ def supplier_feedback_save(request):
 
 def supplier_profile(request):
     user = CustomUser.objects.get(id=request.user.id)
-    supplier = Suppliers.objects.get(admin=user)
+    supplier = Suppliers.objects.get(user=user)
 
     context={
         "user": user,
@@ -175,7 +175,7 @@ def supplier_profile_update(request):
                 customuser.set_password(password)
             customuser.save()
 
-            supplier = Suppliers.objects.get(admin=customuser.id)
+            supplier = Suppliers.objects.get(user=customuser.id)
             supplier.address = address
             supplier.save()
             
@@ -187,10 +187,10 @@ def supplier_profile_update(request):
 
 
 def supplier_view_result(request):
-    supplier = Suppliers.objects.get(admin=request.user.id)
-    student_result = SupplierResult.objects.filter(suppliers_id=supplier.id)
+    supplier = Suppliers.objects.get(user=request.user.id)
+    supplier_result = SupplierResult.objects.filter(suppliers_id=supplier.id)
     context = {
-        "student_result": student_result,
+        "supplier_result": supplier_result,
     }
     return render(request, "supplier_template/supplier_view_result.html", context)
 

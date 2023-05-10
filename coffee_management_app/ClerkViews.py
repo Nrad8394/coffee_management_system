@@ -8,84 +8,84 @@ from django.core import serializers
 import json
 
 
-from coffee_management_app.models import CustomUser, Clerk, Courses, Subjects, Suppliers, SessionYearModel, Attendance, AttendanceReport, LeaveReportClerk, FeedBackClerk, SupplierResult
+from coffee_management_app.models import CustomUser, Clerk, Coffee_types, Batch, Suppliers, SeasonYearModel, Attendance, AttendanceReport, LeaveReportClerk, FeedBackClerk, SupplierResult
 
 
 def clerk_home(request):
     # Fetching All Suppliers under Clerk
 
-    subjects = Subjects.objects.filter(clerk_id=request.user.id)
-    course_id_list = []
-    for batch in subjects:
-        coffee_type = Courses.objects.get(id=batch.course_id.id)
-        course_id_list.append(coffee_type.id)
+    batchs = Batch.objects.filter(clerk_id=request.user.id)
+    coffee_types_id_list = []
+    for batch in batchs:
+        coffee_type = Coffee_types.objects.get(id=batch.coffee_types_id.id)
+        coffee_types_id_list.append(coffee_type.id)
     
-    final_course = []
+    final_coffee_types = []
     # Removing Duplicate Coffee_type Id
-    for course_id in course_id_list:
-        if course_id not in final_course:
-            final_course.append(course_id)
+    for coffee_types_id in coffee_types_id_list:
+        if coffee_types_id not in final_coffee_types:
+            final_coffee_types.append(coffee_types_id)
     
-    students_count = Suppliers.objects.filter(course_id__in=final_course).count()
-    subject_count = subjects.count()
+    suppliers_count = Suppliers.objects.filter(coffee_types_id__in=final_coffee_types).count()
+    batch_count = batchs.count()
 
     # Fetch All Attendance Count
-    attendance_count = Attendance.objects.filter(subject_id__in=subjects).count()
+    attendance_count = Attendance.objects.filter(batch_id__in=batchs).count()
     # Fetch All Approve Leave
-    clerk = Clerk.objects.get(admin=request.user.id)
+    clerk = Clerk.objects.get(user=request.user.id)
     leave_count = LeaveReportClerk.objects.filter(clerk_id=clerk.id, leave_status=1).count()
 
-    #Fetch Attendance Data by Subjects
-    subject_list = []
+    #Fetch Attendance Data by Batch
+    batch_list = []
     attendance_list = []
-    for batch in subjects:
-        attendance_count1 = Attendance.objects.filter(subject_id=batch.id).count()
-        subject_list.append(batch.subject_name)
+    for batch in batchs:
+        attendance_count1 = Attendance.objects.filter(batch_id=batch.id).count()
+        batch_list.append(batch.batch_name)
         attendance_list.append(attendance_count1)
 
-    students_attendance = Suppliers.objects.filter(course_id__in=final_course)
-    student_list = []
-    student_list_attendance_present = []
-    student_list_attendance_absent = []
-    for supplier in students_attendance:
+    suppliers_attendance = Suppliers.objects.filter(coffee_types_id__in=final_coffee_types)
+    supplier_list = []
+    supplier_list_attendance_present = []
+    supplier_list_attendance_absent = []
+    for supplier in suppliers_attendance:
         attendance_present_count = AttendanceReport.objects.filter(status=True, suppliers_id=supplier.id).count()
         attendance_absent_count = AttendanceReport.objects.filter(status=False, suppliers_id=supplier.id).count()
-        student_list.append(supplier.admin.first_name+" "+ supplier.admin.last_name)
-        student_list_attendance_present.append(attendance_present_count)
-        student_list_attendance_absent.append(attendance_absent_count)
+        supplier_list.append(supplier.user.first_name+" "+ supplier.user.last_name)
+        supplier_list_attendance_present.append(attendance_present_count)
+        supplier_list_attendance_absent.append(attendance_absent_count)
 
     context={
-        "students_count": students_count,
+        "suppliers_count": suppliers_count,
         "attendance_count": attendance_count,
         "leave_count": leave_count,
-        "subject_count": subject_count,
-        "subject_list": subject_list,
+        "batch_count": batch_count,
+        "batch_list": batch_list,
         "attendance_list": attendance_list,
-        "student_list": student_list,
-        "attendance_present_list": student_list_attendance_present,
-        "attendance_absent_list": student_list_attendance_absent
+        "supplier_list": supplier_list,
+        "attendance_present_list": supplier_list_attendance_present,
+        "attendance_absent_list": supplier_list_attendance_absent
     }
-    return render(request, "clerk_template/staff_home_template.html", context)
+    return render(request, "clerk_template/clerk_home_template.html", context)
 
 
 
 def clerk_take_attendance(request):
-    subjects = Subjects.objects.filter(clerk_id=request.user.id)
-    session_years = SessionYearModel.objects.all()
+    batchs = Batch.objects.filter(clerk_id=request.user.id)
+    season_years = SeasonYearModel.objects.all()
     context = {
-        "subjects": subjects,
-        "session_years": session_years
+        "batchs": batchs,
+        "season_years": season_years
     }
     return render(request, "clerk_template/take_attendance_template.html", context)
 
 
 def clerk_apply_leave(request):
-    staff_obj = Clerk.objects.get(admin=request.user.id)
-    leave_data = LeaveReportClerk.objects.filter(clerk_id=staff_obj)
+    clerk_obj = Clerk.objects.get(user=request.user.id)
+    leave_data = LeaveReportClerk.objects.filter(clerk_id=clerk_obj)
     context = {
         "leave_data": leave_data
     }
-    return render(request, "clerk_template/staff_apply_leave_template.html", context)
+    return render(request, "clerk_template/clerk_apply_leave_template.html", context)
 
 
 def clerk_apply_leave_save(request):
@@ -96,9 +96,9 @@ def clerk_apply_leave_save(request):
         leave_date = request.POST.get('leave_date')
         leave_message = request.POST.get('leave_message')
 
-        staff_obj = Clerk.objects.get(admin=request.user.id)
+        clerk_obj = Clerk.objects.get(user=request.user.id)
         try:
-            leave_report = LeaveReportClerk(clerk_id=staff_obj, leave_date=leave_date, leave_message=leave_message, leave_status=0)
+            leave_report = LeaveReportClerk(clerk_id=clerk_obj, leave_date=leave_date, leave_message=leave_message, leave_status=0)
             leave_report.save()
             messages.success(request, "Applied for Leave.")
             return redirect('clerk_apply_leave')
@@ -108,12 +108,12 @@ def clerk_apply_leave_save(request):
 
 
 def clerk_feedback(request):
-    staff_obj = Clerk.objects.get(admin=request.user.id)
-    feedback_data = FeedBackClerk.objects.filter(clerk_id=staff_obj)
+    clerk_obj = Clerk.objects.get(user=request.user.id)
+    feedback_data = FeedBackClerk.objects.filter(clerk_id=clerk_obj)
     context = {
         "feedback_data":feedback_data
     }
-    return render(request, "clerk_template/staff_feedback_template.html", context)
+    return render(request, "clerk_template/clerk_feedback_template.html", context)
 
 
 def clerk_feedback_save(request):
@@ -122,10 +122,10 @@ def clerk_feedback_save(request):
         return redirect('clerk_feedback')
     else:
         feedback = request.POST.get('feedback_message')
-        staff_obj = Clerk.objects.get(admin=request.user.id)
+        clerk_obj = Clerk.objects.get(user=request.user.id)
 
         try:
-            add_feedback = FeedBackClerk(clerk_id=staff_obj, feedback=feedback, feedback_reply="")
+            add_feedback = FeedBackClerk(clerk_id=clerk_obj, feedback=feedback, feedback_reply="")
             add_feedback.save()
             messages.success(request, "Feedback Sent.")
             return redirect('clerk_feedback')
@@ -138,22 +138,22 @@ def clerk_feedback_save(request):
 @csrf_exempt
 def get_suppliers(request):
     # Getting Values from Ajax POST 'Fetch Supplier'
-    subject_id = request.POST.get("batch")
-    session_year = request.POST.get("session_year")
+    batch_id = request.POST.get("batch")
+    season_year = request.POST.get("season_year")
 
-    # Suppliers enroll to Coffee_type, Coffee_type has Subjects
-    # Getting all data from batch model based on subject_id
-    subject_model = Subjects.objects.get(id=subject_id)
+    # Suppliers enroll to Coffee_type, Coffee_type has Batch
+    # Getting all data from batch model based on batch_id
+    batch_model = Batch.objects.get(id=batch_id)
 
-    session_model = SessionYearModel.objects.get(id=session_year)
+    season_model = SeasonYearModel.objects.get(id=season_year)
 
-    students = Suppliers.objects.filter(course_id=subject_model.course_id, session_year_id=session_model)
+    suppliers = Suppliers.objects.filter(coffee_types_id=batch_model.coffee_types_id, season_year_id=season_model)
 
     # Only Passing Supplier Id and Supplier Name Only
     list_data = []
 
-    for supplier in students:
-        data_small={"id":supplier.admin.id, "name":supplier.admin.first_name+" "+supplier.admin.last_name}
+    for supplier in suppliers:
+        data_small={"id":supplier.user.id, "name":supplier.user.first_name+" "+supplier.user.last_name}
         list_data.append(data_small)
 
     return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
@@ -165,26 +165,26 @@ def get_suppliers(request):
 def save_attendance_data(request):
     # Get Values from Staf Take Attendance form via AJAX (JavaScript)
     # Use getlist to access HTML Array/List Input Data
-    student_ids = request.POST.get("student_ids")
-    subject_id = request.POST.get("subject_id")
+    supplier_ids = request.POST.get("supplier_ids")
+    batch_id = request.POST.get("batch_id")
     attendance_date = request.POST.get("attendance_date")
-    session_year_id = request.POST.get("session_year_id")
+    season_year_id = request.POST.get("season_year_id")
 
-    subject_model = Subjects.objects.get(id=subject_id)
-    session_year_model = SessionYearModel.objects.get(id=session_year_id)
+    batch_model = Batch.objects.get(id=batch_id)
+    season_year_model = SeasonYearModel.objects.get(id=season_year_id)
 
-    json_student = json.loads(student_ids)
-    # print(dict_student[0]['id'])
+    json_supplier = json.loads(supplier_ids)
+    # print(dict_supplier[0]['id'])
 
-    # print(student_ids)
+    # print(supplier_ids)
     try:
         # First Attendance Data is Saved on Attendance Model
-        attendance = Attendance(subject_id=subject_model, attendance_date=attendance_date, session_year_id=session_year_model)
+        attendance = Attendance(batch_id=batch_model, attendance_date=attendance_date, season_year_id=season_year_model)
         attendance.save()
 
-        for stud in json_student:
+        for stud in json_supplier:
             # Attendance of Individual Supplier saved on AttendanceReport Model
-            supplier = Suppliers.objects.get(admin=stud['id'])
+            supplier = Suppliers.objects.get(user=stud['id'])
             attendance_report = AttendanceReport(suppliers_id=supplier, attendance_id=attendance, status=stud['status'])
             attendance_report.save()
         return HttpResponse("OK")
@@ -195,11 +195,11 @@ def save_attendance_data(request):
 
 
 def clerk_update_attendance(request):
-    subjects = Subjects.objects.filter(clerk_id=request.user.id)
-    session_years = SessionYearModel.objects.all()
+    batchs = Batch.objects.filter(clerk_id=request.user.id)
+    season_years = SeasonYearModel.objects.all()
     context = {
-        "subjects": subjects,
-        "session_years": session_years
+        "batchs": batchs,
+        "season_years": season_years
     }
     return render(request, "clerk_template/update_attendance_template.html", context)
 
@@ -208,23 +208,23 @@ def get_attendance_dates(request):
     
 
     # Getting Values from Ajax POST 'Fetch Supplier'
-    subject_id = request.POST.get("batch")
-    session_year = request.POST.get("session_year_id")
+    batch_id = request.POST.get("batch")
+    season_year = request.POST.get("season_year_id")
 
-    # Suppliers enroll to Coffee_type, Coffee_type has Subjects
-    # Getting all data from batch model based on subject_id
-    subject_model = Subjects.objects.get(id=subject_id)
+    # Suppliers enroll to Coffee_type, Coffee_type has Batch
+    # Getting all data from batch model based on batch_id
+    batch_model = Batch.objects.get(id=batch_id)
 
-    session_model = SessionYearModel.objects.get(id=session_year)
+    season_model = SeasonYearModel.objects.get(id=season_year)
 
-    # students = Suppliers.objects.filter(course_id=subject_model.course_id, session_year_id=session_model)
-    attendance = Attendance.objects.filter(subject_id=subject_model, session_year_id=session_model)
+    # suppliers = Suppliers.objects.filter(coffee_types_id=batch_model.coffee_types_id, season_year_id=season_model)
+    attendance = Attendance.objects.filter(batch_id=batch_model, season_year_id=season_model)
 
     # Only Passing Supplier Id and Supplier Name Only
     list_data = []
 
     for attendance_single in attendance:
-        data_small={"id":attendance_single.id, "attendance_date":str(attendance_single.attendance_date), "session_year_id":attendance_single.session_year_id.id}
+        data_small={"id":attendance_single.id, "attendance_date":str(attendance_single.attendance_date), "season_year_id":attendance_single.season_year_id.id}
         list_data.append(data_small)
 
     return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
@@ -241,7 +241,7 @@ def get_attendance_supplier(request):
     list_data = []
 
     for supplier in attendance_data:
-        data_small={"id":supplier.suppliers_id.admin.id, "name":supplier.suppliers_id.admin.first_name+" "+supplier.suppliers_id.admin.last_name, "status":supplier.status}
+        data_small={"id":supplier.suppliers_id.user.id, "name":supplier.suppliers_id.user.first_name+" "+supplier.suppliers_id.user.last_name, "status":supplier.status}
         list_data.append(data_small)
 
     return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
@@ -249,18 +249,18 @@ def get_attendance_supplier(request):
 
 @csrf_exempt
 def update_attendance_data(request):
-    student_ids = request.POST.get("student_ids")
+    supplier_ids = request.POST.get("supplier_ids")
 
     attendance_date = request.POST.get("attendance_date")
     attendance = Attendance.objects.get(id=attendance_date)
 
-    json_student = json.loads(student_ids)
+    json_supplier = json.loads(supplier_ids)
 
     try:
         
-        for stud in json_student:
+        for stud in json_supplier:
             # Attendance of Individual Supplier saved on AttendanceReport Model
-            supplier = Suppliers.objects.get(admin=stud['id'])
+            supplier = Suppliers.objects.get(user=stud['id'])
 
             attendance_report = AttendanceReport.objects.get(suppliers_id=supplier, attendance_id=attendance)
             attendance_report.status=stud['status']
@@ -273,7 +273,7 @@ def update_attendance_data(request):
 
 def clerk_profile(request):
     user = CustomUser.objects.get(id=request.user.id)
-    clerk = Clerk.objects.get(admin=user)
+    clerk = Clerk.objects.get(user=user)
 
     context={
         "user": user,
@@ -300,7 +300,7 @@ def clerk_profile_update(request):
                 customuser.set_password(password)
             customuser.save()
 
-            clerk = Clerk.objects.get(admin=customuser.id)
+            clerk = Clerk.objects.get(user=customuser.id)
             clerk.address = address
             clerk.save()
 
@@ -313,11 +313,11 @@ def clerk_profile_update(request):
 
 
 def clerk_add_result(request):
-    subjects = Subjects.objects.filter(clerk_id=request.user.id)
-    session_years = SessionYearModel.objects.all()
+    batchs = Batch.objects.filter(clerk_id=request.user.id)
+    season_years = SeasonYearModel.objects.all()
     context = {
-        "subjects": subjects,
-        "session_years": session_years,
+        "batchs": batchs,
+        "season_years": season_years,
     }
     return render(request, "clerk_template/add_result_template.html", context)
 
@@ -327,26 +327,26 @@ def clerk_add_result_save(request):
         messages.error(request, "Invalid Method")
         return redirect('clerk_add_result')
     else:
-        student_admin_id = request.POST.get('student_list')
+        supplier_admin_id = request.POST.get('supplier_list')
         assignment_marks = request.POST.get('assignment_marks')
         exam_marks = request.POST.get('exam_marks')
-        subject_id = request.POST.get('batch')
+        batch_id = request.POST.get('batch')
 
-        student_obj = Suppliers.objects.get(admin=student_admin_id)
-        subject_obj = Subjects.objects.get(id=subject_id)
+        supplier_obj = Suppliers.objects.get(user=supplier_admin_id)
+        batch_obj = Batch.objects.get(id=batch_id)
 
         try:
             # Check if Suppliers Result Already Exists or not
-            check_exist = SupplierResult.objects.filter(subject_id=subject_obj, suppliers_id=student_obj).exists()
+            check_exist = SupplierResult.objects.filter(batch_id=batch_obj, suppliers_id=supplier_obj).exists()
             if check_exist:
-                result = SupplierResult.objects.get(subject_id=subject_obj, suppliers_id=student_obj)
-                result.subject_assignment_marks = assignment_marks
-                result.subject_exam_marks = exam_marks
+                result = SupplierResult.objects.get(batch_id=batch_obj, suppliers_id=supplier_obj)
+                result.batch_assignment_marks = assignment_marks
+                result.batch_exam_marks = exam_marks
                 result.save()
                 messages.success(request, "Result Updated Successfully!")
                 return redirect('clerk_add_result')
             else:
-                result = SupplierResult(suppliers_id=student_obj, subject_id=subject_obj, subject_exam_marks=exam_marks, subject_assignment_marks=assignment_marks)
+                result = SupplierResult(suppliers_id=supplier_obj, batch_id=batch_obj, batch_exam_marks=exam_marks, batch_assignment_marks=assignment_marks)
                 result.save()
                 messages.success(request, "Result Added Successfully!")
                 return redirect('clerk_add_result')

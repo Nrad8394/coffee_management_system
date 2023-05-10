@@ -7,7 +7,7 @@ from django.contrib import messages
 from coffee_management_app.EmailBackEnd import EmailBackEnd
 
 
-def home(request):
+def index(request):
     return render(request, 'index.html')
 
 
@@ -26,7 +26,7 @@ def doLogin(request):
             user_type = user.user_type
             #return HttpResponse("Email: "+request.POST.get('email')+ " Password: "+request.POST.get('password'))
             if user_type == '1':
-                return redirect('admin_home')
+                return redirect('admin_dashboard')
                 
             elif user_type == '2':
                 # return HttpResponse("Clerk Login")

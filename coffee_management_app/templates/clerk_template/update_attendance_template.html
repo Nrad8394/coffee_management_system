@@ -51,17 +51,17 @@
                             <div class="form-group">
                                 <label>Batch </label>
                                 <select class="form-control" name="batch" id="batch">
-                                    {% for batch in subjects %}
-                                        <option value="{{ batch.id }}">{{ batch.subject_name }}</option>
+                                    {% for batch in batchs %}
+                                        <option value="{{ batch.id }}">{{ batch.batch_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
 
                             <div class="form-group">
                                 <label>Season Year </label>
-                                <select class="form-control" name="session_year_id" id="session_year_id">
-                                    {% for session_year in session_years %}
-                                        <option value="{{ session_year.id }}">{{ session_year.session_start_year }} to {{ session_year.session_end_year }}</option>
+                                <select class="form-control" name="season_year_id" id="season_year_id">
+                                    {% for season_year in season_years %}
+                                        <option value="{{ season_year.id }}">{{ season_year.season_start_year }} to {{ season_year.season_end_year }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -93,22 +93,22 @@
                                 </div>
                             </div>
 
-                            <div class="card-footer" id="fetch_student_block" style="display:none;">
+                            <div class="card-footer" id="fetch_supplier_block" style="display:none;">
 
-                                <button type="button" class="btn btn-primary" id="fetch_student">Fetch Supplier Data</button>
+                                <button type="button" class="btn btn-primary" id="fetch_supplier">Fetch Supplier Data</button>
                             </div>
                             
                             <!-- /.card-body -->
 
                             {% comment %} <div class="card-footer">
-                                <button type="button" class="btn btn-primary" id="save_student">Save Data</button>
+                                <button type="button" class="btn btn-primary" id="save_supplier">Save Data</button>
                             </div> {% endcomment %}
 
                         </div>
 
                         {% comment %} Displaying Suppliers Here {% endcomment %}
 
-                        <div class="card-footer" id="student_data">
+                        <div class="card-footer" id="supplier_data">
                         </div> 
 
                     </div>
@@ -132,14 +132,14 @@
 
         $("#fetch_attendance").click(function(){
                 var batch = $("#batch").val()
-                var session_year_id = $("#session_year_id").val()
+                var season_year_id = $("#season_year_id").val()
                 //console.log(batch)
-                //console.log(session_year_id)
+                //console.log(season_year_id)
 
                 $.ajax({
                     url:'{% url 'get_attendance_dates' %}',
                     type:'POST',
-                    data:{batch:batch, session_year_id:session_year_id},
+                    data:{batch:batch, season_year_id:season_year_id},
                 })
 
                 
@@ -155,7 +155,7 @@
                         $("#error_attendance").html("");
                         $("#error_attendance").hide();
                         $("#attendance_block").show();
-                        $("#fetch_student_block").show();
+                        $("#fetch_supplier_block").show();
                         $("#attendance_date").html(html_data);
                         //console.log(response)
                         //alert("Something")
@@ -165,7 +165,7 @@
                         $("#error_attendance").html("No Attendance Data Found.");
                         $("#error_attendance").show();
                         $("#attendance_block").hide();
-                        $("#fetch_student_block").hide();
+                        $("#fetch_supplier_block").hide();
                         $("#attendance_date")="" //Empty the Date Dropdown also
                     }
                     
@@ -174,7 +174,7 @@
                 .fail(function(){
                     alert("Error in getting Attendance Dates.")
                     $("#error_attendance").html("");
-                    $("#fetch_student_block").hide();
+                    $("#fetch_supplier_block").hide();
                     $("#attendance_block").hide();
                 });
 
@@ -182,12 +182,12 @@
         })
 
         // Now Working on Fetch Supplier after attendance date selected
-        $("#fetch_student").click(function(){
+        $("#fetch_supplier").click(function(){
 
             // Displaying Suppliers Based on Clerk, Coffee_type and Season Enrolled
 
             //var batch=$("#batch").val()
-            //var session_year=$("#session_year").val()
+            //var season_year=$("#season_year").val()
             var attendance_date=$("#attendance_date").val()
 
             $.ajax({
@@ -216,7 +216,7 @@
                     {
                         div_data+="";
                     }
-                    div_data+="name='student_data[]' value='"+ json_data[key]['id'] +"' />  <label class='form-check-label'>"+ json_data[key]['name']+" </label> ";
+                    div_data+="name='supplier_data[]' value='"+ json_data[key]['id'] +"' />  <label class='form-check-label'>"+ json_data[key]['name']+" </label> ";
                     
                     // Displaying Present and Absent
 
@@ -237,7 +237,7 @@
                 div_data+="<div class='form-group'>";
                 div_data+="<button id='save_attendance' class='btn btn-success' type='button'>Save Attendance Data</button>";
                 div_data+="</div>";
-                $("#student_data").html(div_data);
+                $("#supplier_data").html(div_data);
 
             })
             .fail(function(){
@@ -254,7 +254,7 @@
                 $(this).text("Saving Attendance Data...")
 
                 //console.log("SAVE")
-                var student_data=$("input[name='student_data[]'").map(function(){ 
+                var supplier_data=$("input[name='supplier_data[]'").map(function(){ 
                         if($(this).is(":checked")){
                             return {"id":$(this).val(), "status":1}; // Getting ID and Value of Suppliers
                         }
@@ -267,15 +267,15 @@
                 var attendance_date=$("#attendance_date").val();
                 
                 
-                student_data = JSON.stringify(student_data)
-                //console.log(student_data);
+                supplier_data = JSON.stringify(supplier_data)
+                //console.log(supplier_data);
 
                 // Saving Attendance Data into Database
 
                 $.ajax({
                     url:'{% url 'update_attendance_data' %}',
                     type:'POST',
-                    data:{student_ids:student_data, attendance_date:attendance_date},
+                    data:{supplier_ids:supplier_data, attendance_date:attendance_date},
                 })
 
                 
