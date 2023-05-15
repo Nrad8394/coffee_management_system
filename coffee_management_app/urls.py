@@ -78,6 +78,7 @@ urlpatterns = [
     path('clerk_feedback_save/', ClerkViews.clerk_feedback_save, name="clerk_feedback_save"),
     path('clerk_profile/', ClerkViews.clerk_profile, name="clerk_profile"),
     path('clerk_profile_update/', ClerkViews.clerk_profile_update, name="clerk_profile_update"),
+    path('select_batch/', ClerkViews.select_batch, name="select_batch"),
     path('clerk_add_coffee_data/', ClerkViews.clerk_add_coffee_data, name="clerk_add_coffee_data"),
     path('clerk_add_coffee_data_save/', ClerkViews.clerk_add_coffee_data_save, name="clerk_add_coffee_data_save"),
 

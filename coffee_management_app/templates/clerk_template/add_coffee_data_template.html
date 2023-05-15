@@ -23,7 +23,7 @@
                     <!-- /.card-header -->
 
                                 {% comment %} Display Messages {% endcomment %}
-                                {% if messages %}
+                                {% if messages %} 
                                 <div class="form-group">
                                 <div class="col-12">
                                     {% for message in messages %}
@@ -46,46 +46,65 @@
                                 </div>
                                 </div>
                                 {% endif %}
-                            
+                                <div class="jumbotron2">
+                                    <form action="" method="post" class="container">
+                                     <table class="table table-dark">
+                                         <thead class="thead-light">
+                                             <tr>
+                                                 <th>supplier name</th>
+                                                 <th>Member no</th>
+                                                 <th>contact</th>
+                                                 <th>weight in kgs</th>
+                                                 <th>actions</th>
+                                                 
+                                 
+                                             </tr>
+                                         </thead>
+                                             <tbody>
+                                                 <tr>
+                                                    {% for supplier in suppliers%}
+                                                     <td>
+                                                         <p> {{supplier.supplier_first_name}} </p>
+                                                     </td>
+                                                     {% endfor %}
+                                                     <td>
+                                                         <div class="form-group">
+                                                           <input type="text" name="supplier_code" id="" class="form-control" placeholder="" >
+                                                         </div>
+                                                     </td>
+                                                     <td>
+                                                         <div class="form-group">
+                                                           <input type="text" name="coffee_amount" id="" class="form-control" placeholder="" >
+                                                         </div>
+                                                     </td>
+                                                     <td>
+                                                         <div class="form-group">
+                                                           <input type="text" name="supplier_name" id="" class="form-control" placeholder="" >
+                                                         </div>
+                                                     </td>
+                                                     <td>
+                                                         <button type="button" name="" id="" class="btn btn-danger" btn-lg btn-block">
+                                                             <i class="fas fa-print" "></i>Update
+                                                         </button>
+                                                         <button type="button" class="btn btn-danger">
+                                                             <i class="fas fa-print"></i>Print
+                                                         </button>
+                                                     </td>
+                                                     
+                                                 </tr>
+                                             </tbody>
+                                        
+                                         <tfoot class=" ">
+                                             <tr>
+                                                 <th>#</th>
+                                             </tr>
+                                         </tfoot>
+                                     </table>
+                                    </form>
+                                 </div>
 
-                        <div class="card-body">
-                           <div class="d-flex flex-row p-2 ">
-                            <div class="form-group p-2">
-                                <label>Batch </label>
-                                <select class="form-control " name="batch" id="batch">
-                                    {% for batch in batchs %}
-                                        <option value="{{ batch.id }}">{{ batch.batch_name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-
-                            <div class="form-group p-2">
-                                <label>Season Year </label>
-                                <select class="form-control" name="season_year" id="season_year">
-                                    {% for season_year in season_years %}
-                                        <option value="{{ season_year.id }}">{{ season_year.season_start_year }} to {{ season_year.season_end_year }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                           </div>
-                           <div class="card-footer">
-                            <button type="button" class="btn btn-primary" id="fetch_supplier">Fetch Supplier</button>
-                        </div>
-
-
-                        </div>
-                        <!-- /.card-body -->
-
-                        
-
-                        {% comment %} Displaying Suppliers Here {% endcomment %}
-
-                        <div class="card-footer" id="supplier_data">
-                        </div> 
-
-                    </div>
-                    </form>
-                    <!-- /.card -->
+                       
+                    
 
                 </div>
             </div>
@@ -98,113 +117,6 @@
 {% block custom_js %}
 
 <script>
-    $(document).ready(function(){
-        $("#fetch_supplier").click(function(){
-
-            // Displaying Suppliers Based on Clerk, Coffee_type and Season Enrolled
-
-            var batch=$("#batch").val()
-            var season_year=$("#season_year").val()
-
-            $.ajax({
-                url:'{% url 'get_suppliers' %}',
-                type:'POST',
-                data:{batch:batch, season_year:season_year},
-            })
-
-            
-            .done(function(response){
-                var json_data=JSON.parse(response);
-                console.log(json_data)
-                //Displaying Attendance Date Input and Suppliers Attendance
-                var div_data="<div class='form-group'><label>Supplier List</label> <select class='supplier_list form-control' name='supplier_list'>"
-
-                for(key in json_data)
-                {
-                    div_data+="<option value='"+ json_data[key]['id'] +"'>ID: "+ json_data[key]['id'] +" : "+ json_data[key]['name'] +"</option>";
-
-                }
-                div_data+="</select>";
-                div_data+="</div>";
-                div_data+="<div class='form-group'><div class='row'>";
-
-                div_data+="<div class='col-lg-6'>";
-                div_data+="<label>Assignment Marks : </label><input type='text'name='assignment_marks' class='form-control' placeholder='Assignment Marks' />";
-                div_data+="</div>";
-
-                div_data+="<div class='col-lg-6'>";
-                div_data+="<label>Coffee Amount : </label><input type='text'name='coffee_amount' class='form-control' placeholder='Coffee amount' />";
-                div_data+="</div>";
-
-                div_data+="</div></div>";
-
-                div_data+="<div class='form-group'>";
-                div_data+="<button id='save_attendance' class='btn btn-success' type='submit'>Save Coffee data</button>";
-                div_data+="</div>";
-                $("#supplier_data").html(div_data);
-
-            })
-            .fail(function(){
-                alert("Error in Fetching Suppliers.")
-            })
-
-            // Save Attendance Data to Database
-            /*
-            $(document).on("click", "#save_attendance", function(){
-                
-                //Disabling the Button while data is being saved in Server
-                $(this).attr("disabled", "disabled")
-                $(this).text("Saving Attendance Data...")
-
-                //console.log("SAVE")
-                var supplier_data=$("input[name='supplier_data[]'").map(function(){ 
-                        if($(this).is(":checked")){
-                            return {"id":$(this).val(), "status":1}; // Getting ID and Value of Suppliers
-                        }
-                        else
-                        {
-                            return {"id":$(this).val(), "status":0}; // Getting ID and Value of Suppliers
-                        }
-                    }).get()
-                var attendance_date=$("#attendance_date").val();
-                var batch_id=$("#batch").val();
-                var season_year_id=$("#season_year").val();
-                //console.log(attendance_date)
-                //console.log(supplier_data);
-                supplier_data = JSON.stringify(supplier_data)
-
-                // Saving Attendance Data into Database
-
-                $.ajax({
-                    url:'{% url 'save_attendance_data' %}',
-                    type:'POST',
-                    data:{supplier_ids:supplier_data, attendance_date:attendance_date, batch_id:batch_id, season_year_id:season_year_id},
-                })
-
-                
-                .done(function(response){
-                    
-                    if(response=="OK")
-                    {
-                        alert("Attendance Saved!")
-                    }
-                    else
-                    {
-                        alert("Failed to Save Attendance!")
-                    }
-                    location.reload()
-                    
-                    //console.log(response)
-                })
-
-                .fail(function(){
-                    alert("Error in Saving Suppliers Attendance Data.")
-                })
-
-            })
-            */
-
-        })
-    })
+   
 </script>
 {% endblock custom_js %}

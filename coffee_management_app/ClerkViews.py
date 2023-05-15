@@ -311,17 +311,31 @@ def clerk_profile_update(request):
             return redirect('clerk_profile')
 
 
-
-def clerk_add_coffee_data(request):
+def select_batch(request):
     batchs = Batch.objects.filter(clerk_id=request.user.id)
     season_years = SeasonYearModel.objects.all()
     context = {
         "batchs": batchs,
         "season_years": season_years,
     }
-    return render(request, "clerk_template/add_coffee_data_template.html", context)
+    return render(request, "clerk_template/select_batch_template.html", context)
+def clerk_add_coffee_data(request):
+    if request.method != "POST":
+        messages.error(request, "Invalid Method")
+        return redirect('select_batch')
+    else:
+        batch_id = request.POST.get('batch')
+        season_year = request.POST.get('season_year')
+         # Getting all data from batch model based on batch_id
+        batch_model = Batch.objects.get(id=batch_id)
 
+        season_model = SeasonYearModel.objects.get(id=season_year)
 
+        suppliers = Suppliers.objects.filter(coffee_types_id=batch_model.coffee_types_id, season_year_id=season_model)
+        context = {
+            'suppliers': suppliers
+        }
+        return render(request, "clerk_template/add_coffee_data_template.html", context)
 def clerk_add_coffee_data_save(request):
     if request.method != "POST":
         messages.error(request, "Invalid Method")

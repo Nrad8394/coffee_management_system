@@ -60,8 +60,8 @@
             </li>
 
             <li class="nav-item">
-              {% url 'clerk_add_coffee_data' as clerk_add_coffee_data %}
-              <a href="{{ clerk_add_coffee_data }}" class="nav-link {% if request.path == clerk_add_coffee_data %} active {% endif %}">
+              {% url 'select_batch' as select_batch %}
+              <a href="{{ select_batch }}" class="nav-link {% if request.path == select_batch %} active {% endif %}">
                 <i class="nav-icon fas fa-tasks"></i>
                 <p>
                   Add Coffee data
