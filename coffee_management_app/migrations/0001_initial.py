@@ -105,11 +105,11 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='SupplierResult',
+            name='SupplierCoffeedata',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('batch_exam_marks', models.FloatField(default=0)),
-                ('batch_assignment_marks', models.FloatField(default=0)),
+                ('coffee_amount', models.FloatField(default=0)),
+                ('coffee_grade', models.FloatField(default=0)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('batch_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='coffee_management_app.Batch')),

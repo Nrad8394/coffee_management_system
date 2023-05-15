@@ -5,7 +5,7 @@ from django.core.files.storage import FileSystemStorage #To upload Profile Pictu
 from django.urls import reverse
 import datetime # To Parse input DateTime into Python Date Time Object
 
-from coffee_management_app.models import CustomUser, Clerk, Coffee_types, Batch, Suppliers, Attendance, AttendanceReport, LeaveReportSuppliers, FeedBackSuppliers, SupplierResult
+from coffee_management_app.models import CustomUser, Clerk, Coffee_types, Batch, Suppliers, Attendance, AttendanceReport, LeaveReportSuppliers, FeedBackSuppliers, SupplierCoffeedata
 
 
 def supplier_home(request):
@@ -188,7 +188,7 @@ def supplier_profile_update(request):
 
 def supplier_view_result(request):
     supplier = Suppliers.objects.get(user=request.user.id)
-    supplier_result = SupplierResult.objects.filter(suppliers_id=supplier.id)
+    supplier_result = SupplierCoffeedata.objects.filter(suppliers_id=supplier.id)
     context = {
         "supplier_result": supplier_result,
     }

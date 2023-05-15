@@ -8,7 +8,7 @@ from django.core import serializers
 import json
 
 
-from coffee_management_app.models import CustomUser, Clerk, Coffee_types, Batch, Suppliers, SeasonYearModel, Attendance, AttendanceReport, LeaveReportClerk, FeedBackClerk, SupplierResult
+from coffee_management_app.models import CustomUser, Clerk, Coffee_types, Batch, Suppliers, SeasonYearModel, Attendance, AttendanceReport, LeaveReportClerk, FeedBackClerk, SupplierCoffeedata
 
 
 def clerk_home(request):
@@ -312,44 +312,44 @@ def clerk_profile_update(request):
 
 
 
-def clerk_add_result(request):
+def clerk_add_coffee_data(request):
     batchs = Batch.objects.filter(clerk_id=request.user.id)
     season_years = SeasonYearModel.objects.all()
     context = {
         "batchs": batchs,
         "season_years": season_years,
     }
-    return render(request, "clerk_template/add_result_template.html", context)
+    return render(request, "clerk_template/add_coffee_data_template.html", context)
 
 
-def clerk_add_result_save(request):
+def clerk_add_coffee_data_save(request):
     if request.method != "POST":
         messages.error(request, "Invalid Method")
-        return redirect('clerk_add_result')
-    else:
+        return redirect('clerk_add_coffee_data')
+    else: 
         supplier_admin_id = request.POST.get('supplier_list')
         assignment_marks = request.POST.get('assignment_marks')
-        exam_marks = request.POST.get('exam_marks')
+        coffee_amount = request.POST.get('coffee_amount')
         batch_id = request.POST.get('batch')
 
         supplier_obj = Suppliers.objects.get(user=supplier_admin_id)
         batch_obj = Batch.objects.get(id=batch_id)
 
         try:
-            # Check if Suppliers Result Already Exists or not
-            check_exist = SupplierResult.objects.filter(batch_id=batch_obj, suppliers_id=supplier_obj).exists()
+            # Check if Suppliers Coffee data Already Exists or not
+            check_exist = SupplierCoffeedata.objects.filter(batch_id=batch_obj, suppliers_id=supplier_obj).exists()
             if check_exist:
-                result = SupplierResult.objects.get(batch_id=batch_obj, suppliers_id=supplier_obj)
-                result.batch_assignment_marks = assignment_marks
-                result.batch_exam_marks = exam_marks
+                result = SupplierCoffeedata.objects.get(batch_id=batch_obj, suppliers_id=supplier_obj)
+                result.coffee_grade = assignment_marks
+                result.coffee_amount = coffee_amount 
                 result.save()
-                messages.success(request, "Result Updated Successfully!")
-                return redirect('clerk_add_result')
+                messages.success(request, "Coffee data Updated Successfully!")
+                return redirect('clerk_add_coffee_data')
             else:
-                result = SupplierResult(suppliers_id=supplier_obj, batch_id=batch_obj, batch_exam_marks=exam_marks, batch_assignment_marks=assignment_marks)
+                result = SupplierCoffeedata(suppliers_id=supplier_obj, batch_id=batch_obj, coffee_amount=coffee_amount, coffee_grade=assignment_marks)
                 result.save()
-                messages.success(request, "Result Added Successfully!")
-                return redirect('clerk_add_result')
+                messages.success(request, "Coffee data Added Successfully!")
+                return redirect('clerk_add_coffee_data')
         except:
-            messages.error(request, "Failed to Add Result!")
-            return redirect('clerk_add_result')
+            messages.error(request, "Failed to Add Coffee data!")
+            return redirect('clerk_add_coffee_data')

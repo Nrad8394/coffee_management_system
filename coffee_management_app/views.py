@@ -23,7 +23,7 @@ def doLogin(request):
         user = EmailBackEnd.authenticate(request, username=request.POST.get('email'), password=request.POST.get('password'))
         if user != None:
             login(request, user)
-            user_type = user.user_type
+            user_type = user.user_type 
             #return HttpResponse("Email: "+request.POST.get('email')+ " Password: "+request.POST.get('password'))
             if user_type == '1':
                 return redirect('admin_dashboard')

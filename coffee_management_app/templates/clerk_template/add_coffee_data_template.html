@@ -1,7 +1,7 @@
 {% extends 'clerk_template/base_template.html' %}
 
 {% block page_title %}
-    Add Result
+    Add Coffee Data
 {% endblock page_title %}
 
 {% block main_content %}
@@ -14,11 +14,11 @@
             <div class="row">
                 <div class="col-md-12">
                     <!-- general form elements -->
-                    <form method="POST" action="{% url 'clerk_add_result_save' %}">
+                    <form method="POST" action="{% url 'clerk_add_coffee_data_save' %}">
                     {% csrf_token %}
                     <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Add Result</h3>
+                        <h3 class="card-title">Add Coffee Data</h3>
                     </div>
                     <!-- /.card-header -->
 
@@ -49,17 +49,17 @@
                             
 
                         <div class="card-body">
-                           
-                            <div class="form-group">
+                           <div class="d-flex flex-row p-2 ">
+                            <div class="form-group p-2">
                                 <label>Batch </label>
-                                <select class="form-control" name="batch" id="batch">
+                                <select class="form-control " name="batch" id="batch">
                                     {% for batch in batchs %}
                                         <option value="{{ batch.id }}">{{ batch.batch_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group p-2">
                                 <label>Season Year </label>
                                 <select class="form-control" name="season_year" id="season_year">
                                     {% for season_year in season_years %}
@@ -67,14 +67,16 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                           </div>
+                           <div class="card-footer">
+                            <button type="button" class="btn btn-primary" id="fetch_supplier">Fetch Supplier</button>
+                        </div>
 
 
                         </div>
                         <!-- /.card-body -->
 
-                        <div class="card-footer">
-                        <button type="button" class="btn btn-primary" id="fetch_supplier">Fetch Supplier</button>
-                        </div>
+                        
 
                         {% comment %} Displaying Suppliers Here {% endcomment %}
 
@@ -131,13 +133,13 @@
                 div_data+="</div>";
 
                 div_data+="<div class='col-lg-6'>";
-                div_data+="<label>Exam Marks : </label><input type='text'name='exam_marks' class='form-control' placeholder='Exam Marks' />";
+                div_data+="<label>Coffee Amount : </label><input type='text'name='coffee_amount' class='form-control' placeholder='Coffee amount' />";
                 div_data+="</div>";
 
                 div_data+="</div></div>";
 
                 div_data+="<div class='form-group'>";
-                div_data+="<button id='save_attendance' class='btn btn-success' type='submit'>Save Result</button>";
+                div_data+="<button id='save_attendance' class='btn btn-success' type='submit'>Save Coffee data</button>";
                 div_data+="</div>";
                 $("#supplier_data").html(div_data);
 

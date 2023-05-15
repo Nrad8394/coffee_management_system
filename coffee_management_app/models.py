@@ -1,3 +1,4 @@
+import uuid
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models.signals import post_save
@@ -53,7 +54,7 @@ class Coffee_types(models.Model):
 class Batch(models.Model):
     id =models.AutoField(primary_key=True)
     batch_name = models.CharField(max_length=255)
-    coffee_types_id = models.ForeignKey(Coffee_types, on_delete=models.CASCADE, default=1) #need to give defauult coffee_type
+    coffee_types_id = models.ForeignKey(Coffee_types, on_delete=models.CASCADE, default=1) #need to give default coffee_type
     clerk_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -90,6 +91,8 @@ class AttendanceReport(models.Model):
     id = models.AutoField(primary_key=True)
     suppliers_id = models.ForeignKey(Suppliers, on_delete=models.DO_NOTHING)
     attendance_id = models.ForeignKey(Attendance, on_delete=models.CASCADE)
+    coffee_amount = models.FloatField(default=0)
+    coffee_grade = models.FloatField(default=0)
     status = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -148,6 +151,7 @@ class NotificationSupplier(models.Model):
     objects = models.Manager()
 
 
+
 class NotificationClerk(models.Model):
     id = models.AutoField(primary_key=True)
     clerk_id = models.ForeignKey(Clerk, on_delete=models.CASCADE)
@@ -157,12 +161,20 @@ class NotificationClerk(models.Model):
     objects = models.Manager()
 
 
-class SupplierResult(models.Model):
+class SupplierCoffeedata(models.Model):
     id = models.AutoField(primary_key=True)
     suppliers_id = models.ForeignKey(Suppliers, on_delete=models.CASCADE)
     batch_id = models.ForeignKey(Batch, on_delete=models.CASCADE)
-    batch_exam_marks = models.FloatField(default=0)
-    batch_assignment_marks = models.FloatField(default=0)
+    coffee_amount = models.FloatField(default=0)
+    coffee_grade = models.FloatField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = models.Manager()
+
+class SupplierReceipt:
+    id = models.AutoField(primary_key=True)
+    receipt_code = models.UUIDField(default=uuid.uuid4, editable=False)
+    receipt_data = models.ForeignKey(SupplierCoffeedata,on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()

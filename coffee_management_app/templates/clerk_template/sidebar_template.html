@@ -60,11 +60,11 @@
             </li>
 
             <li class="nav-item">
-              {% url 'clerk_add_result' as clerk_add_result %}
-              <a href="{{ clerk_add_result }}" class="nav-link {% if request.path == clerk_add_result %} active {% endif %}">
+              {% url 'clerk_add_coffee_data' as clerk_add_coffee_data %}
+              <a href="{{ clerk_add_coffee_data }}" class="nav-link {% if request.path == clerk_add_coffee_data %} active {% endif %}">
                 <i class="nav-icon fas fa-tasks"></i>
                 <p>
-                  Add Result
+                  Add Coffee data
                   {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
                 </p>
               </a>

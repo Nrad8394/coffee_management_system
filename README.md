@@ -24,14 +24,14 @@ And if you like this project then ADD a STAR ⭐️  to this project 👆
 ### B. Clerk/Teachers Can
 1. See the Overall Summary Charts related to their suppliers, their batch, leave status, etc.
 2. Take/Update Suppliers Attendance
-3. Add/Update Result
+3. Add/Update Coffee data
 4. Apply for Leave
 5. Send Feedback to AdminManager
 
 ### C. Suppliers Can
 1. See the Overall Summary Charts related to their attendance, their batch, leave status, etc.
 2. View Attendance
-3. View Result
+3. View Coffee data
 4. Apply for Leave
 5. Send Feedback to AdminManager
 

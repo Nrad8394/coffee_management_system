@@ -72,14 +72,14 @@ urlpatterns = [
     path('get_attendance_dates/', ClerkViews.get_attendance_dates, name="get_attendance_dates"),
     path('get_attendance_supplier/', ClerkViews.get_attendance_supplier, name="get_attendance_supplier"),
     path('update_attendance_data/', ClerkViews.update_attendance_data, name="update_attendance_data"),
-    path('clerk_apply_leave/', ClerkViews.clerk_apply_leave, name="clerk_apply_leave"),
+    path('clerk_apply_leave/', ClerkViews.clerk_apply_leave, name="clerk_apply_leave"), 
     path('clerk_apply_leave_save/', ClerkViews.clerk_apply_leave_save, name="clerk_apply_leave_save"),
     path('clerk_feedback/', ClerkViews.clerk_feedback, name="clerk_feedback"),
     path('clerk_feedback_save/', ClerkViews.clerk_feedback_save, name="clerk_feedback_save"),
     path('clerk_profile/', ClerkViews.clerk_profile, name="clerk_profile"),
     path('clerk_profile_update/', ClerkViews.clerk_profile_update, name="clerk_profile_update"),
-    path('clerk_add_result/', ClerkViews.clerk_add_result, name="clerk_add_result"),
-    path('clerk_add_result_save/', ClerkViews.clerk_add_result_save, name="clerk_add_result_save"),
+    path('clerk_add_coffee_data/', ClerkViews.clerk_add_coffee_data, name="clerk_add_coffee_data"),
+    path('clerk_add_coffee_data_save/', ClerkViews.clerk_add_coffee_data_save, name="clerk_add_coffee_data_save"),
 
     # URSL for Supplier
     path('supplier_home/', SupplierViews.supplier_home, name="supplier_home"),
